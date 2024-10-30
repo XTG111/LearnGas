@@ -5,7 +5,9 @@
 #include "PlayerStates/XPlayerState.h"
 #include "AbilitySystems/XAbilitySystemComponent.h"
 #include "AbilitySystems/XAttributeSet.h"
+#include "Controllers/XPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/HUD/XHUD.h"
 
 AXPlayerCharacter::AXPlayerCharacter()
 {
@@ -44,5 +46,13 @@ void AXPlayerCharacter::InitialAbilityActorInfo()
 		XPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(XPlayerState, this);
 		AbilitySystemComponent = XPlayerState->GetAbilitySystemComponent();
 		AttributeSet = XPlayerState->GetAttributeSet();
+
+		AXPlayerController* XPlayerController = GetController<AXPlayerController>();
+		if(XPlayerController)
+		{
+			XHUD = Cast<AXHUD>(XPlayerController->GetHUD());
+			if(XHUD) XHUD->InitOverlay(XPlayerController,XPlayerState,AbilitySystemComponent,AttributeSet);
+		}
+		
 	}
 }

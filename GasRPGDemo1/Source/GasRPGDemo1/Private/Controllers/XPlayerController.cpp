@@ -22,8 +22,11 @@ void AXPlayerController::BeginPlay()
 	Super::BeginPlay();
 	check(XPlayerContext); //检测XPlayerContext是否有效
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(XPlayerContext, 0);
+	if(Subsystem) //只有LocalPlayer的Client才会获得Subsystem
+	{
+		Subsystem->AddMappingContext(XPlayerContext, 0);
+	}
+	
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;

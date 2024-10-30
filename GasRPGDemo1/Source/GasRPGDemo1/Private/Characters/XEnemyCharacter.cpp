@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "../GasRPGDemo1.h"
 #include "Characters/XEnemyCharacter.h"
 #include "AbilitySystems/XAbilitySystemComponent.h"
 #include "AbilitySystems/XAttributeSet.h"
+#include "../GasRPGDemo1.h"
 
 
 AXEnemyCharacter::AXEnemyCharacter()

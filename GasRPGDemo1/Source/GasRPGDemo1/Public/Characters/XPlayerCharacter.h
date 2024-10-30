@@ -6,6 +6,7 @@
 #include "Characters/XBaseCharacter.h"
 #include "XPlayerCharacter.generated.h"
 
+class AXHUD;
 /**
  * 
  */
@@ -19,6 +20,9 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+	UPROPERTY()
+	AXHUD* XHUD;
 
 protected:
 	virtual void BeginPlay() override;

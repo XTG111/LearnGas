@@ -28,7 +28,8 @@ void AXEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 		);
 		//Just For test use const_cast
 		UXAttributeSet* MutableXAttributeSet = const_cast<UXAttributeSet*>(XAttributeSet);
-		MutableXAttributeSet->SetHealth(XAttributeSet->GetHealth() + 25.f);
+		MutableXAttributeSet->SetHealth(XAttributeSet->GetHealth() - 50.0f);
+		MutableXAttributeSet->SetMana(XAttributeSet->GetMana() - 10.0f);
 		Destroy();
 	}
 }
