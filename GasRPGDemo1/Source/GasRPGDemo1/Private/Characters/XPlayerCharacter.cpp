@@ -45,6 +45,7 @@ void AXPlayerCharacter::InitialAbilityActorInfo()
 	{
 		XPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(XPlayerState, this);
 		AbilitySystemComponent = XPlayerState->GetAbilitySystemComponent();
+		Cast<UXAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet(); //tell the asc actor info set success
 		AttributeSet = XPlayerState->GetAttributeSet();
 
 		AXPlayerController* XPlayerController = GetController<AXPlayerController>();

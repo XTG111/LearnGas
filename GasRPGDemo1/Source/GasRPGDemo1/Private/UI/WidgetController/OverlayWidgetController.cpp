@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "AbilitySystems/XAbilitySystemComponent.h"
 #include "AbilitySystems/XAttributeSet.h"
 
 void UOverlayWidgetController::BroadCastInitValue()
@@ -22,36 +23,52 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	UXAttributeSet* XAttributeSet = CastChecked<UXAttributeSet>(AttributeSet);
 	if (XAttributeSet)
 	{
-		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(
-			XAttributeSet->GetHealthAttribute()).AddUObject(this, &UOverlayWidgetController::HealthChanged);
-
-		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(
-			XAttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UOverlayWidgetController::MaxHealthChanged);
-
-		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(
-			XAttributeSet->GetManaAttribute()).AddUObject(this,&UOverlayWidgetController::ManaChanged);
-
-		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(
-			XAttributeSet->GetMaxManaAttribute()).AddUObject(this,&UOverlayWidgetController::MaxManaChanged);
+		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(XAttributeSet->GetHealthAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data)
+				{
+					OnHealthChanged.Broadcast(Data.NewValue);
+				}
+		);
+		
+		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(XAttributeSet->GetMaxHealthAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data)
+				{
+					OnMaxHealthChanged.Broadcast(Data.NewValue);
+				}
+		);
+		
+		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(XAttributeSet->GetManaAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data)
+				{
+					OnManaChanged.Broadcast(Data.NewValue);
+				}
+		);
+		
+		AbilitySytemComponent->GetGameplayAttributeValueChangeDelegate(XAttributeSet->GetMaxManaAttribute()).AddLambda(
+		[this](const FOnAttributeChangeData& Data)
+				{
+					OnMaxManaChanged.Broadcast(Data.NewValue);
+				}
+		);
 	}
-}
-
-void UOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnManaChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxManaChanged.Broadcast(Data.NewValue);
+	Cast<UXAbilitySystemComponent>(AbilitySytemComponent)->EffecAssetTags.AddLambda(
+		[this](const FGameplayTagContainer& TagContainer)
+		{
+			for(const FGameplayTag& tag : TagContainer)
+			{
+				//Find the original tag
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				//MessageTag = Message
+				//if tag = Message.HealthPotion
+				//"Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will return False
+				if(tag.MatchesTag(MessageTag))
+				{
+					//just want the message tag effect show in UI
+					
+					FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, tag);
+					MessageWidgetRowSignature.Broadcast(*Row);
+				}
+			}
+		}
+		);
 }

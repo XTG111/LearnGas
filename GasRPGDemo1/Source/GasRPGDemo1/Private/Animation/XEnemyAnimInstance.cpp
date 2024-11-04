@@ -2,6 +2,8 @@
 
 
 #include "Animation/XEnemyAnimInstance.h"
+
+#include "KismetAnimationLibrary.h"
 #include "Characters/XEnemyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -29,7 +31,7 @@ void UXEnemyAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	FVector Velocity = XEnemyCharacter->GetVelocity();
 	Velocity.Z = 0.0f;
 	GroundSpeed = Velocity.Size();
-	Direction = CalculateDirection(XEnemyCharacter->GetVelocity(), XEnemyCharacter->GetActorRotation());
+	Direction = UKismetAnimationLibrary::CalculateDirection(XEnemyCharacter->GetVelocity(), XEnemyCharacter->GetActorRotation());
 	//是否在加速
 	bIsAccelerating = XEnemyCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.0f ? true : false;
 	bIsInAir = XEnemyCharacter->GetCharacterMovement()->IsFalling();

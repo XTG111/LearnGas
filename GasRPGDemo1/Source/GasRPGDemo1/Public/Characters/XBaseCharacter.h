@@ -23,6 +23,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void InitialAbilityActorInfo();
 
 protected:
 	UPROPERTY(EditAnywhere)

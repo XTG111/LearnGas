@@ -57,9 +57,13 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	//call after the abiliity change but before show UI
+	//call befor the effect apply
+	//so if we clamp the value, and when the effect doing and cause the value beyond the max now the another effect coming
+	//the attribute will recaculate by the no clamp value 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override; //just clamping the attribute value change
 
+	//call after the effect apply and the attribute is already set
+	//so we can clamp here for change the real value
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
 	//begin Attributes

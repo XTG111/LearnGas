@@ -26,7 +26,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-private:
-	void InitialAbilityActorInfo();
+	
+	virtual void InitialAbilityActorInfo() override;
 };

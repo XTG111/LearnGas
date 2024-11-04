@@ -21,7 +21,13 @@ AXEnemyCharacter::AXEnemyCharacter()
 void AXEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	InitialAbilityActorInfo();
+}
+
+void AXEnemyCharacter::InitialAbilityActorInfo()
+{
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UXAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
 
 void AXEnemyCharacter::HighlightActor()

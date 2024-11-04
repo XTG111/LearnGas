@@ -22,3 +22,7 @@ void AXBaseCharacter::BeginPlay()
 	
 }
 
+void AXBaseCharacter::InitialAbilityActorInfo()
+{
+}
+
