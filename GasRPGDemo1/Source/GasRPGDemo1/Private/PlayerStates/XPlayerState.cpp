@@ -4,6 +4,7 @@
 #include "PlayerStates/XPlayerState.h"
 #include "AbilitySystems/XAbilitySystemComponent.h"
 #include "AbilitySystems/XAttributeSet.h"
+#include  "Net/UnrealNetwork.h"
 
 AXPlayerState::AXPlayerState()
 {
@@ -19,4 +20,14 @@ AXPlayerState::AXPlayerState()
 UAbilitySystemComponent* AXPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AXPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AXPlayerState, curLevel);
+}
+
+void AXPlayerState::OnRep_curLevel(float oldlevel)
+{
 }

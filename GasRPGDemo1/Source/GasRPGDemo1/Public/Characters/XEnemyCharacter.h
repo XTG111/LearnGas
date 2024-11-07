@@ -23,10 +23,19 @@ protected:
 	virtual void InitialAbilityActorInfo() override;
 
 public:
+#pragma region Enemy Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+#pragma endregion
+
+#pragma region Combat Interface
+	virtual float GetCurLevel() override;
+#pragma endregion
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlight = false;
-	
+
+	//AI Enemy level can be changed easily in editor
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	float curLevel = 1.0f;
 };

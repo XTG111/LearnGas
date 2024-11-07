@@ -21,6 +21,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
+#pragma region Combat Interface
+	virtual float GetCurLevel() override;
+#pragma endregion
+	
 	UPROPERTY()
 	AXHUD* XHUD;
 

@@ -10,10 +10,6 @@
 
 UXAttributeSet::UXAttributeSet()
 {
-	InitHealth(50.0f);
-	InitMaxHealth(100.0f);;
-	InitMana(20.0f);
-	InitMaxMana(50.0f);
 }
 
 void UXAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -21,9 +17,24 @@ void UXAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	//vital attributes
 	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+	//primary attributes
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Strength, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Resilience, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
+	//secondary attributes
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, Armor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, CriticalHitChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, CriticalHitDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, CriticalHitResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, ManaRegeneration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UXAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 }
 
@@ -98,19 +109,80 @@ void UXAttributeSet::OnRep_Health(const FGameplayAttributeData& oldhealth) const
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, Health, oldhealth);
 }
 
-void UXAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& oldmaxhealth) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxHealth, oldmaxhealth);
-}
-
 void UXAttributeSet::OnRep_Mana(const FGameplayAttributeData& oldmana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, Mana, oldmana);
 }
 
+void UXAttributeSet::OnRep_Strength(const FGameplayAttributeData& oldstrength) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldstrength);
+}
+
+void UXAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& oldintelligence) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldintelligence);
+}
+
+void UXAttributeSet::OnRep_Resilience(const FGameplayAttributeData& oldresilience) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldresilience);
+}
+
+void UXAttributeSet::OnRep_Vigor(const FGameplayAttributeData& oldvigor) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldvigor);
+}
+
+#pragma region secondary attributes
+void UXAttributeSet::OnRep_Armor(const FGameplayAttributeData& oldarmor) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldarmor);
+}
+
+void UXAttributeSet::OnRep_ArmorPenetration(const FGameplayAttributeData& oldarmorpenetration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldarmorpenetration);
+}
+
+void UXAttributeSet::OnRep_BlockChance(const FGameplayAttributeData& oldblockchance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldblockchance);
+}
+
+void UXAttributeSet::OnRep_CriticalHitChance(const FGameplayAttributeData& oldcriticalhitchance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldcriticalhitchance);
+}
+
+void UXAttributeSet::OnRep_CriticalHitDamage(const FGameplayAttributeData& oldcriticalhitdamage) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldcriticalhitdamage);
+}
+
+void UXAttributeSet::OnRep_CriticalHitResistance(const FGameplayAttributeData& oldcriticalhitresistance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldcriticalhitresistance);
+}
+
+void UXAttributeSet::OnRep_HealthRegeneration(const FGameplayAttributeData& oldhealthregeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldhealthregeneration);
+}
+
+void UXAttributeSet::OnRep_ManaRegeneration(const FGameplayAttributeData& oldmanaregeneration) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldmanaregeneration);
+}
+void UXAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& oldmaxhealth) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxHealth, oldmaxhealth);
+}
 void UXAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& oldmaxmana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UXAttributeSet, MaxMana, oldmaxmana);
 }
+#pragma endregion
+
 
 

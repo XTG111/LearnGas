@@ -2,6 +2,7 @@
 
 
 #include "Characters/XBaseCharacter.h"
+#include "AbilitySystemComponent.h"
 
 AXBaseCharacter::AXBaseCharacter()
 {
@@ -25,4 +26,26 @@ void AXBaseCharacter::BeginPlay()
 void AXBaseCharacter::InitialAbilityActorInfo()
 {
 }
+
+void AXBaseCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> effectclass, float level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(effectclass);	
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(effectclass,level,ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(),GetAbilitySystemComponent());
+}
+
+void AXBaseCharacter::InitiaDefaultAttributes() const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(InitialPrimaryEffectClass);
+	check(InitialSecondaryEffectClass);
+	check(InitialVitalEffectClass);
+	ApplyEffectToSelf(InitialPrimaryEffectClass,1.0f);
+	ApplyEffectToSelf(InitialSecondaryEffectClass,1.0f);
+	ApplyEffectToSelf(InitialVitalEffectClass,1.0f);
+}
+
 

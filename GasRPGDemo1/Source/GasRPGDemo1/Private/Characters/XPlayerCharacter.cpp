@@ -33,6 +33,13 @@ void AXPlayerCharacter::OnRep_PlayerState()
 	InitialAbilityActorInfo();// Initial Ability Actor Info for the client
 }
 
+float AXPlayerCharacter::GetCurLevel()
+{
+	AXPlayerState* XPlayerState = Cast<AXPlayerState>(GetPlayerState());
+	check(XPlayerState);
+	return XPlayerState->GetPlayerCurLevel();
+}
+
 void AXPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,6 +61,7 @@ void AXPlayerCharacter::InitialAbilityActorInfo()
 			XHUD = Cast<AXHUD>(XPlayerController->GetHUD());
 			if(XHUD) XHUD->InitOverlay(XPlayerController,XPlayerState,AbilitySystemComponent,AttributeSet);
 		}
-		
+
+		InitiaDefaultAttributes();
 	}
 }

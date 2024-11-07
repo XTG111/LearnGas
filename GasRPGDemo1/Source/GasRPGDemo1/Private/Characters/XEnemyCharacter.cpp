@@ -53,3 +53,8 @@ void AXEnemyCharacter::UnHighlightActor()
 		WeaponMesh->SetRenderCustomDepth(false);
 	}
 }
+
+float AXEnemyCharacter::GetCurLevel()
+{
+	return curLevel;
+}
