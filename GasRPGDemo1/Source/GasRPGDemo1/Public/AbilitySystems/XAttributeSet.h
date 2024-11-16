@@ -45,6 +45,10 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
+//typedef TBaseStaticDelegateInstance<FGameplayAttribute(),FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
+template<typename T>
+using TStaicFuncPtr = typename TBaseStaticDelegateInstance<T,FDefaultDelegateUserPolicy>::FFuncPtr;
+
 /**
  * 
  */
@@ -65,6 +69,11 @@ public:
 	//call after the effect apply and the attribute is already set
 	//so we can clamp here for change the real value
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+
+	//using TMap to save the Attribute and the GameplayTag So we can use gameplaytag to find attribute and get the value
+	//like the XAttributeMenuWidgetController.h
+	TMap<FGameplayTag,TStaicFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 	
 	//begin Attributes
 #pragma region primary attribute

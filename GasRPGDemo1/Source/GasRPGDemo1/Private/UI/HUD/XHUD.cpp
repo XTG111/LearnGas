@@ -4,6 +4,7 @@
 #include "UI/HUD/XHUD.h"
 #include "UI/Widgets/XUserWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/WidgetController/XAttributeMenuWidgetController.h"
 
 UOverlayWidgetController* AXHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
@@ -36,5 +37,18 @@ void AXHUD::InitOverlay(APlayerController* pc, APlayerState* ps, UAbilitySystemC
 	WidgetController->BroadCastInitValue();
 	
 	Widget->AddToViewport();
+}
+
+UXAttributeMenuWidgetController* AXHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if(AttributesMenuWidgetController == nullptr)
+	{
+		AttributesMenuWidgetController = NewObject<UXAttributeMenuWidgetController>(this, AttributesMenuWidgetControllerClass);
+		AttributesMenuWidgetController->SetWidgetControllerParams(WCParams);
+		//调用 绑定属性变化的函数, 将属性与变化逻辑进行绑定
+		AttributesMenuWidgetController->BindCallbacksToDependencies();
+		return AttributesMenuWidgetController; 
+	}
+	return AttributesMenuWidgetController;
 }
 

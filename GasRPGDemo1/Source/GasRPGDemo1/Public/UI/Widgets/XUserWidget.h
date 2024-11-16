@@ -20,6 +20,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
 protected:
+	//After the SetWidgetController Call, Can use this func to know the controller Set Already  
 	UFUNCTION(BlueprintImplementableEvent)
 	void WidgetControllerSet();
 };
