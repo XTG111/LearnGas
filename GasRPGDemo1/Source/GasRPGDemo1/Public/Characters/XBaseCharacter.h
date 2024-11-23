@@ -9,6 +9,7 @@
 #include "XBaseCharacter.generated.h"
 
 
+class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
@@ -28,8 +29,10 @@ protected:
 	virtual void InitialAbilityActorInfo();
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName WeaponTipSocketName;
 
 	//Gas -- Only Use For Enemy
 	UPROPERTY()
@@ -50,6 +53,13 @@ protected:
 	void InitiaDefaultAttributes() const;
 	
 public:
-	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; };
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; }
 
+	virtual FVector GetSocketLocation() override;
+protected:
+	virtual void AddCharacterAbilities();
+	
+private:
+	UPROPERTY(EditAnywhere,Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartGameplayAbilities;
 };

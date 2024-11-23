@@ -3,6 +3,7 @@
 
 #include "Characters/XBaseCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystems/XAbilitySystemComponent.h"
 
 AXBaseCharacter::AXBaseCharacter()
 {
@@ -46,6 +47,20 @@ void AXBaseCharacter::InitiaDefaultAttributes() const
 	ApplyEffectToSelf(InitialPrimaryEffectClass,1.0f);
 	ApplyEffectToSelf(InitialSecondaryEffectClass,1.0f);
 	ApplyEffectToSelf(InitialVitalEffectClass,1.0f);
+}
+
+FVector AXBaseCharacter::GetSocketLocation()
+{
+	check(WeaponMesh);
+	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);
+}
+
+void AXBaseCharacter::AddCharacterAbilities()
+{
+	//Only grate in Server
+	if(!HasAuthority()) return;
+	UXAbilitySystemComponent* XASC = CastChecked<UXAbilitySystemComponent>(AbilitySystemComponent);
+	XASC->AddGameplayAbilities(StartGameplayAbilities);
 }
 
 

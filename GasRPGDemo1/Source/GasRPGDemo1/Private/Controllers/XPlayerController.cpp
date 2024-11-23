@@ -2,19 +2,31 @@
 
 
 #include "Controllers/XPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
+#include "XGameplayTags.h"
+#include "AbilitySystems/XAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
+#include "Input/XEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "Widgets/Text/ISlateEditableTextWidget.h"
 
 AXPlayerController::AXPlayerController()
 {
 	bReplicates = true;
+	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
 
 void AXPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
+	AutoRun();
+	
 }
 
 void AXPlayerController::BeginPlay()
@@ -41,9 +53,10 @@ void AXPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UXEnhancedInputComponent* EnhancedInputComponent = CastChecked<UXEnhancedInputComponent>(InputComponent);
 
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AXPlayerController::Move);
+	EnhancedInputComponent->BindInputActionFunction(InputConfig,this,&AXPlayerController::PressedFunc,&AXPlayerController::ReleasedFunc,&AXPlayerController::HeldFunc);
 }
 
 void AXPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -69,49 +82,120 @@ void AXPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AXPlayerController::CursorTrace()
 {
-	
-	FHitResult CursorHit;
-	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
-	if (!CursorHit.bBlockingHit) return;
+	GetHitResultUnderCursor(ECC_Visibility, false, VisibilityCursorHit);
+	if (!VisibilityCursorHit.bBlockingHit) return;
 	LastActor = CurActor;
-	CurActor = CursorHit.GetActor();
-	/*
-	* a. lastactor is null && curactor is null
-	*  - do nothing
-	* b. lastactor is null && curactor isn't null
-	*  - do highlight
-	* c. lastactor isn't null && curactor isn't null && lastactor != curactor
-	*  - lastactor do unhighlight curactor do hightlight
-	* d. lastactor isn't null && curactor is null
-	*  - lastactor do unhighlight
-	* e. lastactor isn't null && curactor isn't null && lastactor == curactor
-	*  - do nothing
-	*/
-	if (!LastActor)
+	CurActor = VisibilityCursorHit.GetActor();
+
+	if(LastActor != CurActor)
 	{
-		if (CurActor)
-		{
-			// b
-			CurActor->HighlightActor();
-		}
-		// a
+		if(LastActor) LastActor->UnHighlightActor();
+		if(CurActor) CurActor->HighlightActor();
+	}
+}
+
+void AXPlayerController::PressedFunc(FGameplayTag GameplayTag)
+{
+	//GEngine->AddOnScreenDebugMessage(1,2.0f,FColor::Blue,*GameplayTag.ToString());
+	if(GameplayTag.MatchesTagExact(XGameplayTags::GetInstance().InputTag_LMB)) // just for left mouse button we need choose
+	{
+		bTarget = CurActor ? true : false;
+		bAutoRunning = false;
+	}
+}
+
+void AXPlayerController::ReleasedFunc(FGameplayTag GameplayTag)
+{
+	//GEngine->AddOnScreenDebugMessage(2,2.0f,FColor::Red,*GameplayTag.ToString());
+	if(!GameplayTag.MatchesTagExact(XGameplayTags::GetInstance().InputTag_LMB))
+	{
+		if(GetXASC()) GetXASC()->AbilityInputTagRealesed(GameplayTag);
+		return ;
+	}
+	if(bTarget)
+	{
+		if(GetXASC()) GetXASC()->AbilityInputTagRealesed(GameplayTag);
 	}
 	else
 	{
-		if (!CurActor)
+		APawn* CurPawn = GetPawn();
+		if(FollowTime <= ShortPressThreshold && CurPawn)
 		{
-			// d
-			LastActor->UnHighlightActor();
-		}
-		else
-		{
-			if (LastActor != CurActor)
+			UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, CurPawn->GetActorLocation(), CachedDestination);
+			if(NavPath)
 			{
-				// c
-				LastActor->UnHighlightActor();
-				CurActor->HighlightActor();
+				// NavPath->PathPoints: Array of FVector from actorlocation to goallocation
+				//we need use this points create the spline
+				Spline->ClearSplinePoints();
+				for(const FVector& PointVec : NavPath->PathPoints)
+				{
+					Spline->AddSplinePoint(PointVec,ESplineCoordinateSpace::World);
+				}
+				CachedDestination = NavPath->PathPoints.Last();
+				bAutoRunning = true;
 			}
 		}
-		// e
+		FollowTime = 0.0f;
+		bTarget = false;
+	}
+	
+}
+
+void AXPlayerController::HeldFunc(FGameplayTag GameplayTag)
+{
+	//GEngine->AddOnScreenDebugMessage(2,2.0f,FColor::Green,*GameplayTag.ToString());
+	if(!GameplayTag.MatchesTagExact(XGameplayTags::GetInstance().InputTag_LMB))
+	{
+		if(GetXASC()) GetXASC()->AbilityInputTagHeld(GameplayTag);
+		return ;
+	}
+	//think about running
+	if(bTarget)
+	{
+		if(GetXASC()) GetXASC()->AbilityInputTagHeld(GameplayTag);
+	}
+	else
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+		
+		if(VisibilityCursorHit.IsValidBlockingHit())
+		{
+			CachedDestination = VisibilityCursorHit.ImpactPoint;
+		}
+		if(APawn* ControlledPawn = GetPawn())
+		{
+			const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(WorldDirection);
+		}
+	}
+}
+
+UXAbilitySystemComponent* AXPlayerController::GetXASC()
+{
+	if(XAbilitySystemComponent == nullptr)
+	{
+		XAbilitySystemComponent = Cast<UXAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+
+	return XAbilitySystemComponent;
+}
+
+void AXPlayerController::AutoRun()
+{
+	if(!bAutoRunning) return;
+	if(APawn* ControlledPawn = GetPawn())
+	{
+		//the location in spline which near the player location
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(),ESplineCoordinateSpace::World);
+
+		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(LocationOnSpline,ESplineCoordinateSpace::World);
+
+		ControlledPawn->AddMovementInput(Direction);
+
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if(DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+		}
 	}
 }

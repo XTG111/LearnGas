@@ -74,13 +74,13 @@
 /GasRPGDemo1/DerivedDataCache/*
 
 # Content
-/GasRPGDemo1/Content/Assets/*
-/GasRPGDemo1/Content/Maps/*
-/GasRPGDemo1/Content/__ExternalActors__/*
-/GasRPGDemo1/Content/__ExternalObjects__/*
-/GasRPGDemo1/Content/Characters/*
-/GasRPGDemo1/Content/Collections/*
-/GasRPGDemo1/Content/Developers/*
-/GasRPGDemo1/Content/LevelPrototyping/*
-/GasRPGDemo1/Content/ThirdPerson/*
-/GasRPGDemo1/Content/BluePrints/*
+GasRPGDemo1/Content/Assets/*
+GasRPGDemo1/Content/Maps/*
+GasRPGDemo1/Content/__ExternalActors__/*
+GasRPGDemo1/Content/__ExternalObjects__/*
+GasRPGDemo1/Content/Characters/*
+GasRPGDemo1/Content/Collections/*
+GasRPGDemo1/Content/Developers/*
+GasRPGDemo1/Content/LevelPrototyping/*
+GasRPGDemo1/Content/ThirdPerson/*
+GasRPGDemo1/Content/BluePrints/*

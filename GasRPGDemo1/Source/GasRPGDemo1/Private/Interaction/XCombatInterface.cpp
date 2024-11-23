@@ -8,3 +8,8 @@ float IXCombatInterface::GetCurLevel()
 {
 	return 0.0f;
 }
+
+FVector IXCombatInterface::GetSocketLocation()
+{
+	return FVector();
+}

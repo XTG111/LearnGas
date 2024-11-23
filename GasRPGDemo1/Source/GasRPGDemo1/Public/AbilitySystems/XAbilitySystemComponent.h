@@ -21,7 +21,13 @@ public:
 	void AbilityActorInfoSet();
 
 	FEffecAssetTags EffecAssetTags;
+
+	void AddGameplayAbilities(const TArray<TSubclassOf<UGameplayAbility>> abilities);
+
+	void AbilityInputTagHeld(const FGameplayTag& tag);
+	void AbilityInputTagRealesed(const FGameplayTag& tag);
 protected:
 	//call back when effect apply -- AbilitySystemComponent.h/FOnGameplayEffectAppliedDelegate
-	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
+	UFUNCTION(Client, Reliable)
+	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 };

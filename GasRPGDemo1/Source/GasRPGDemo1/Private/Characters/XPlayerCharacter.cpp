@@ -25,6 +25,7 @@ void AXPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitialAbilityActorInfo(); // Initial Ability Actor Info for the server
+	AddCharacterAbilities();
 }
 
 void AXPlayerCharacter::OnRep_PlayerState()

@@ -25,4 +25,5 @@ public:
 
 	//get player cur level
 	virtual float GetCurLevel();
+	virtual FVector GetSocketLocation();
 };

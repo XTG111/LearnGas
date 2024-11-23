@@ -38,6 +38,15 @@ public:
  FGameplayTag Attributes_Secondary_MaxHealth;
  FGameplayTag Attributes_Secondary_MaxMana;
 #pragma endregion
+
+#pragma region InputTag
+ FGameplayTag InputTag_LMB;
+ FGameplayTag InputTag_RMB;
+ FGameplayTag InputTag_Num1;
+ FGameplayTag InputTag_Num2;
+ FGameplayTag InputTag_Num3;
+ FGameplayTag InputTag_Num4;
+#pragma endregion
  
 protected:
 private:
